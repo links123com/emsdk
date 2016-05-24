@@ -6,8 +6,8 @@ import (
 )
 
 // 授权模式注册用户
-func (c *Client) CreateAccount(username, password string) error {
-	data := `{"username":"` + username + `","password":"` + password + `"}`
+func (c *Client) CreateAccount(username, password, nickname string) error {
+	data := `{"username":"` + username + `","password":"` + password + `","nickname":"` + nickname + `"}`
 	_, err := c.sendRequest("users", strings.NewReader(data), "POST")
 
 	return err
