@@ -6,8 +6,14 @@ import (
 )
 
 // 增加群组
-func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, maxusers int, members []string) error {
+func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, maxusers int, members []string) (string, error) {
 	url := "chatgroups"
+	var res string
+	var restruct struct {
+		Data struct {
+			Groupid string
+		}
+	}
 	group := struct {
 		Groupname string   `json:"groupname"`
 		Desc      string   `json:"desc"`
@@ -28,11 +34,17 @@ func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, 
 
 	data, err := json.Marshal(group)
 	if err != nil {
-		return err
+		return "", err
 	}
-	_, err = c.sendRequest(url, strings.NewReader(string(data)), "POST")
+	res, err = c.sendRequest(url, strings.NewReader(string(data)), "POST")
 
-	return err
+	err = json.Unmarshal([]byte(res), &restruct)
+
+	if err != nil {
+		return "", err
+	}
+
+	return (restruct.Data.Groupid), err
 }
 
 // 修改群组
