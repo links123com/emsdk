@@ -6,7 +6,7 @@ import (
 )
 
 // 增加群组
-func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, maxusers int, members []string) (string, error) {
+func (c *Client) AddGroup(groupName, desc, owner string, public, approval bool, maxUsers int, members []string) (string, error) {
 	url := "chatgroups"
 	var res string
 	var restruct struct {
@@ -15,20 +15,20 @@ func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, 
 		}
 	}
 	group := struct {
-		Groupname string   `json:"groupname"`
+		GroupName string   `json:"groupname"`
 		Desc      string   `json:"desc"`
 		Owner     string   `json:"owner"`
 		Public    bool     `json:"public"`
 		Approval  bool     `json:"approval"`
-		Maxusers  int      `json:"maxusers"`
+		MaxUsers  int      `json:"maxusers"`
 		Members   []string `json:"members"`
 	}{
-		Groupname: groupname,
+		GroupName: groupName,
 		Desc:      desc,
 		Owner:     owner,
 		Public:    public,
 		Approval:  approval,
-		Maxusers:  maxusers,
+		MaxUsers:  maxUsers,
 		Members:   members,
 	}
 
@@ -36,10 +36,13 @@ func (c *Client) AddGroup(groupname, desc, owner string, public, approval bool, 
 	if err != nil {
 		return "", err
 	}
+
 	res, err = c.sendRequest(url, strings.NewReader(string(data)), "POST")
+	if err != nil {
+		return "", err
+	}
 
 	err = json.Unmarshal([]byte(res), &restruct)
-
 	if err != nil {
 		return "", err
 	}
